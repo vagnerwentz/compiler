@@ -1,0 +1,162 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  static = true;
+}
+
+PARSER_BEGIN(Compiler)
+package compiler;
+import recovery.*;
+
+public class Compiler implements CompilerTreeConstants
+{
+  public static void main(String args []) throws ParseException
+  {
+    new Compiler(System.in);
+    System.out.println("------------------------");
+    System.out.println("\") Compiler Language ");
+    System.out.println("\tv0.0.1");
+    System.out.println("------------------------\n");
+    try {
+		SimpleNode simpleNode = Compiler.Start();
+		simpleNode.dump("-- >");
+    } catch (Exception ex) {
+		System.out.println("\nError!");
+  	}
+  }
+
+  static public String im(int x)
+  {
+    int k;
+    String s;
+    s = tokenImage[x];
+    k = s.lastIndexOf("\"");
+    try {
+      s = s.substring(1,k);
+    }
+   catch (StringIndexOutOfBoundsException e) {}
+   return s;
+  }
+}
+
+PARSER_END(Compiler)
+
+SimpleNode Start() :
+{}
+{
+  (compiler())
+}
+
+void compiler():
+{
+}
+{
+  try {
+	iniciocompiler()
+    bloco()
+    fimcompiler()
+  } catch (ParseException e) {
+    
+  }
+}
+
+void bloco() :
+{ }
+{
+  try {
+    (
+      declaracaVariaveis()
+//      | condicional()
+//      | repeticaoPara()
+//      | repeticaoEnquanto()
+//      | chamadorDeIdNome()
+//      | retorno()
+    )*
+  }
+  catch (ParseException e) {
+    consumeUntil(g, e, "bloco");
+  }
+}
+
+void id() :
+{ }
+{
+    bool()
+    | numero()
+    | funcao()
+    | texto()
+}
+
+void declaracaVariaveis():
+{}
+{
+ id() 
+}
+
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN :
+{
+  < CONSTANT : (< DIGIT >)+ >
+| < #DIGIT : [ "0"-"9" ] >
+}
+
+TOKEN :
+{
+  < SOMA       : "+"  >
+| < SUBTRAI    : "-"  >
+| < MULTIPLICA : "*"  >
+| < DIVIDE     : "/"  >
+| < POTENCIACAO   : "**" >
+| < IGUALDADE  : "==" >
+| < ATRIBUICAO : "="  >
+| < MENOR      : "<"  >
+| < MAIOR      : ">"  >
+| < MENOR_IGUAL : "<=" >
+| < MAIOR_IGUAL : ">=" >
+| < ELOGICO	   : "&&" >
+| < OULOGICO   : "||" >
+}
+
+TOKEN :
+{
+  < TIPO_NUMERO     : "number"   >
+| < TIPO_TEXTO      : "string"  >
+| < TIPO_BOOL       : "bool"  >
+| < TIPO_FUNCAO     : "function"   >
+}
+
+TOKEN :
+{
+	< ABRE_PARENTESE  : "(" >
+| 	< FECHA_PARENTESE : ")" >
+| 	< ABRE_CHAVES     : "{" >
+| 	< FECHA_CHAVES    : "}" >
+|  	< PONTO_E_VIRGULA  : ";" >
+|   < VIRGULA        : "," >
+|   < PONTO			 : "." >
+| 	< ABRE_COLCHETES  : "[" >
+| 	< FECHA_COLCHETES : "]" >
+}
+
+TOKEN :
+{
+	< INICIO_COMPILER: "initialize">
+| 	< FIM_COMPILER: "terminate">
+}
+
+void iniciocompiler () : {}{< INICIO_COMPILER >}
+void fimcompiler () : {}{< FIM_COMPILER >}
+void numero () : {}{< TIPO_NUMERO >}
+void texto () : {}{< TIPO_TEXTO >}
+void bool () : {}{< TIPO_BOOL >}
+void funcao () : {}{< TIPO_FUNCAO >}
